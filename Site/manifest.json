@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+
+    "name": "Visual Studio Online Extension",
+    "description": "This extension provides some missing features in Visual Studio Online",
+    "version": "2.0",
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_title": "VSO Helper Extension"
+    },
+    "content_scripts": [
+        {
+            "css": [ "vsopopout.css" ],
+            "matches": [ "https://*.visualstudio.com/*" ],
+            "js": [ "jquery-1.11.3.min.js", "vsopopout.js", "addscrumtemplate.js", "exportvsodata.js", "notifypullrequest.js", "showaddtask.js", "showmyvsotasks.js", "keyindenting.js" ]
+        }
+    ],
+    "background": {
+        "scripts": [ "vsobackground.js" ]
+    },
+    "web_accessible_resources": [
+        "images/*.png",
+        "vsopopout.html"
+    ],
+    "permissions": [
+        "activeTab",
+        "alarms"
+    ]
+}
