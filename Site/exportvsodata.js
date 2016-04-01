@@ -38,7 +38,7 @@
                 });
                 if (rowDataConcat.length > 0) {
                     lastRowRead = $(row).attr("id");
-                    console.log(lastRowRead);
+                    //console.log(lastRowRead);
                     rows.push(vsoRow);
                 } else {
                     return;
