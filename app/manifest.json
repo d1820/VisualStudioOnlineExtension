@@ -2,8 +2,9 @@
     "name": "Visual Studio Online Extension",
     "description": "This extension provides some missing features in Visual Studio Online",
     "manifest_version": 2,
-    "version": "2.0",
-    "browser_action": {
+    "version": "3.0.0",
+    "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAignovzmMAMPq9DIkJ8q7KxENZNf39ZKUqsgCEw8xgkNXRjFHG/3gpHDSA+ImNXN2iV1bgB3M7/GB0MinZHmSqE4MSwh8r+we5O07Ho43Q+DwqLbch4HRoFqwRasm+AUUDqx2/7jBLbvtt6uIht4OW4BKJmAA52FnH78N1X8621iQZvNTugaXkDDju9XU25wFHAPjpz/S8MA4BfFIbrhANyrhHKdZaM5pEQ0nwgOhlsGGOc9HL3pUxejmPC5Q0BvO0rjsTPiC1lC97Uu0VXUR2+NNZJZhbP1pFSwU4INbaiYoqqfb5mSMEg3azy71EvBeUrRULPlB1RN8Cd0uCjzD4QIDAQAB",
+    "page_action": {
         "default_icon": "images/vso19.png",
         "default_title": "VSO Utilities"
     },
@@ -14,7 +15,7 @@
     "content_scripts": [
         {
             "css": [
-                "styles/toolbar.css"
+                "styles/content.css"
             ],
             "matches": [
                 "https://*.visualstudio.com/*"
@@ -46,7 +47,7 @@
     "web_accessible_resources": [
         "images/*.png",
         "fonts/*",
-        "toolbar.html"
+        "content.html"
     ],
     "permissions": [
         "activeTab",

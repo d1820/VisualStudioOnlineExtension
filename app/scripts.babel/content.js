@@ -184,7 +184,7 @@ var vsopopout = vsopopout || (function () {
     if (!templatedata) {
       $.ajax(
         {
-          url: chrome.extension.getURL('/vsopopout.html'),
+          url: chrome.extension.getURL('/content.html'),
           cache: false,
           success: function (data) {
             templatedata = data;
