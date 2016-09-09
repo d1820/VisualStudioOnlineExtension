@@ -1,0 +1,10 @@
+{
+  "name": "jenkinsplusext",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
+  }
+}
