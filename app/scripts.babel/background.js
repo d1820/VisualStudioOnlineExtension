@@ -1,5 +1,6 @@
-﻿let vsoShowing = false;
-chrome.browserAction.onClicked.addListener(function (tab) {
+﻿/* eslint no-undefined: off */
+let vsoShowing = false;
+chrome.pageAction.onClicked.addListener(function (tab) {
   if (!vsoShowing) {
     _sendMessage(tab, "showVsoExtenstion", () => {
       vsoShowing = true;
@@ -13,9 +14,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   }
 });
 
-chrome.runtime.onInstalled.addListener(details => {
-  console.log("previousVersion", details);
-
+chrome.runtime.onInstalled.addListener(() => {
+  //console.log("previousVersion", details);
   // Replace all rules ...
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     // With a new rule ...
@@ -39,16 +39,20 @@ const methods = {
   //this gets called from the content when user clicks close icon
   setState: (isShowing) => {
     vsoShowing = isShowing;
+  },
+  openInNewTab: (data, sendResponse) => {
+    chrome.tabs.create({ url: data.url });
+    sendResponse({ status: "success" });
   }
 };
 
 chrome.runtime.onMessage.addListener(function (request) {
-  if (methods.hasOwnProperty(request.method)) {
-    methods[request.method](request.data);
+  if (methods.hasOwnProperty(request.action)) {
+    methods[request.action](request.data);
   }
   return true;
 });
 
-function _sendMessage(tab, method, callback) {
-  chrome.tabs.sendMessage(tab.id, { method: method }, callback);
+function _sendMessage(tab, action, callback) {
+  chrome.tabs.sendMessage(tab.id, { action: action }, callback);
 }

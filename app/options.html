@@ -1,27 +1,28 @@
 <!doctype html>
 <html>
+
 <head>
   <title>Visual Studio Online Extension Settings</title>
   <link href="styles/options.css" rel="stylesheet">
 </head>
+
 <body>
-  <div class="vsoext-console-options">
-    <div class="panel panel-primary vsoext-settings-container">
-      <div class="panel-heading">
-        <h2>Visual Studio Online Extension Settings</h2>
-      </div>
-      <div class="panel-body">
-        <div class="message-container">
-          <div class="label label-success" id="status" style="display:none;"></div>
-        </div>
+  <div class="vsoext-console-options vsoext-bootstrap">
+    <div class="vsoext-settings-container">
+      <h1>Visual Studio Online Extension Settings</h1>
+      <div>
+        
         <div class="form-group">
           <div class="form-check">
-            <label class="switch-label"> Open console viewer on page load</label>
+            <label class="switch-label"> Open toolbar on page load</label>
             <label class="switch">
               <input type="checkbox" id="autoOpen" />
               <div class="slider round"></div>      
             </label>
           </div>
+        </div>
+        <div class="message-container">
+          <div class="label label-success" id="status" style="display:block;">test</div>
         </div>
         <div class="button-container">
           <button id="save" class="btn btn-primary">Save</button>
@@ -31,4 +32,5 @@
   </div>
   <script src="scripts/options.js"></script>
 </body>
+
 </html>

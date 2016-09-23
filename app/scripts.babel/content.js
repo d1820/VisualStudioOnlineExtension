@@ -1,56 +1,137 @@
-
-class vsoController {
+/* eslint no-undef:off */
+class VsoController {
   constructor(view, storage, runtime, messagingService) {
     this.view = view;
     this.storage = storage;
     this.runtime = runtime;
     this._messagingService = messagingService;
-    this._jpConsoleOptions = {};
+    this._vsoOptions = {};
     this.vsoDefaultOptions = {
-      autoOpenConsole: false
+      autoOpenToolbar: false
     };
+    this.templatedata = null;
   }
 
   initalize() {
     const self = this;
     this.storage.local.get(this.vsoDefaultOptions, (options) => {
-      self._jpConsoleOptions = options;
-      if (options.autoOpenConsole) {
+      self._vsoOptions = options;
+      if (options.autoOpenToolbar) {
+        self._renderToolbar(self.view);
       }
     });
-
-    this.storage.onChanged.addListener(function (changes) {
-
-      for (const k in changes) {
-        if (self._jpConsoleOptions.hasOwnProperty(k)) {
-          self._jpConsoleOptions[k] = changes[k].newValue;
-        }
-      }
-    });
-
     this.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       self._extensionInfo = (request.extInfo ? request.extInfo : self._extensionInfo);
       switch (request.action) {
-        case "showconsoleviewer":
+        case "showVsoExtenstion":
           {
-            if (self._showConsoleAndLoadIcons(self._isDevelopment(), sendResponse)) {
-              break;
-            }
-            const err = self._createError("failure:notSuportedPage", "Not a supported page for the Jenkins Console Viewer");
-            self._messagingService.warning(err.error);
+            self._renderToolbar(self.view);
+            //const err = self._createError("failure:notSuportedPage", "Not a supported page for the Jenkins Console Viewer");
+            //self._messagingService.warning(err.error);
             if (sendResponse) {
-              sendResponse(err);
+              sendResponse({ status: "successfully opened" });
             }
             break;
           }
         default:
+          self._removeToolbar(self.view);
           if (sendResponse) {
-            sendResponse(self._createError("failure:invalidAction", "Unknown action recieved in content script. Action: " + request.action));
+            sendResponse({ status: "successfully closed" });
           }
           break;
       }
       return true;
     });
+
+    this._vsoExtAddScrumTemplate = new vsoExtAddScrumTemplate(this.view.getJquery());
+    this._vsoExtExportData = new vsoExtExportData(this.view.getJquery());
+    this._vsoKeyIndentingTemplate = new vsoKeyIndentingTemplate(this.view.getJquery());
+    this._vsoExtNotifyPullRequest = new vsoExtNotifyPullRequest(this.view.getJquery(), self._messagingService);
+    this._vsoExtShowAddTask = new vsoExtShowAddTask(this.view.getJquery());
+    this._vsoextShowMyVsoTasks = new vsoextShowMyVsoTasks(this.view.getJquery());
+  }
+
+  _renderToolbar(view) {
+    const self = this;
+    const pageContainer = view.getPageContainer();
+    if (!self.templatedata) {
+      $.ajax(
+        {
+          url: chrome.extension.getURL("/toolbar.html"),
+          cache: false,
+          success: function (data) {
+            self.templatedata = data;
+            if (pageContainer.length > 0) {
+              pageContainer.before($(data));
+            }
+            self._addToolbarItems(view);
+          }
+        });
+    } else {
+      self._removeToolbar(view);
+      pageContainer.before($(self.templatedata));
+      self._addToolbarItems(view);
+    }
+  }
+
+  _removeToolbar(view) {
+    const vsoContainer = view.getToolbarContainer();
+    if (vsoContainer.length > 0) {
+      vsoContainer.remove();
+    }
+    view.removePageContainerClass();
+  }
+
+  _addToolbarItems(view) {
+    const self = this;
+    view.addPageContainerClass();
+    view.closeToolbarClick(() => {
+      self._removeToolbar(view);
+      chrome.runtime.sendMessage({ action: "setState", data: false });
+    });
+    view.bugToolbarClick(() => {
+      self.runtime.sendMessage({
+        action: "openInNewTab",
+        data: { url: "https://github.com/d1820/VisualStudioOnlineExtension/issues" }
+      });
+    });
+    view.optionsToolbarClick(() => {
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        self.runtime.sendMessage({
+          action: "openInNewTab",
+          data: { url: "chrome://extensions/?options=" + chrome.runtime.id }
+        });
+      }
+
+
+    });
+    view.showMyTasksButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoextShowMyVsoTasks.execute);
+    });
+    view.addTaskButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoExtShowAddTask.execute);
+    });
+    view.addTemplateButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoExtAddScrumTemplate.execute);
+    });
+    view.exportDataButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoExtExportData.execute);
+    });
+    view.notifyPullRequestButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoExtNotifyPullRequest.execute);
+    });
+    view.enableKeyIndentingButtonRegisterClick(() => {
+      this._checkAndCall(this._vsoKeyIndentingTemplate.execute);
+    });
+  }
+
+  _checkAndCall(callback) {
+    if (!this._checkUrl()) {
+      return;
+    }
+    callback();
   }
 
   _createError(errorId, error) {
@@ -61,17 +142,70 @@ class vsoController {
     };
   }
 
+  _checkUrl(messagingService) {
+    if (window.location.href.indexOf("visualstudio.com") === -1) {
+      messagingService.warning("Extension can only run when Visual Studio Online is the active tab");
+      return false;
+    }
+    return true;
+  }
 }
 
-class vsoView {
+class VsoView {
 
+  constructor(jqueryyRef) {
+    this.$ = jqueryyRef;
+  }
+  getJquery() {
+    return this.$;
+  }
+  getPageContainer() {
+    return this.$(".main-container");
+  }
+  getToolbarContainer() {
+    return this.$("#page-vsoext-toolbar-container");
+  }
+  showMyTasksButtonRegisterClick(clickCallback) {
+    this.$("#showmyvsotasks").off().click(clickCallback);
+  }
+  addTaskButtonRegisterClick(clickCallback) {
+    this.$("#addtask").off().click(clickCallback);
+  }
+  addTemplateButtonRegisterClick(clickCallback) {
+    this.$("#addtemplate").off().click(clickCallback);
+  }
+  exportDataButtonRegisterClick(clickCallback) {
+    this.$("#exportdata").off().click(clickCallback);
+  }
+  notifyPullRequestButtonRegisterClick(clickCallback) {
+    this.$("#notifyPullRequest").off().click(clickCallback);
+  }
+  enableKeyIndentingButtonRegisterClick(clickCallback) {
+    this.$("#enablekeyindenter").off().click(clickCallback);
+  }
+  removePageContainerClass() {
+    const pageContainer = this.getPageContainer();
+    pageContainer.removeClass("main-container-offset");
+  }
+  addPageContainerClass() {
+    const pageContainer = this.getPageContainer();
+    pageContainer.addClass("main-container-offset");
+  }
+  closeToolbarClick(callback) {
+    this.$("#page-vsoext-toolbar-close").click(callback);
+  }
+
+  bugToolbarClick(callback) {
+    this.$("#page-vsoext-toolbar-bug").click(callback);
+  }
+
+  optionsToolbarClick(callback) {
+    this.$("#page-vsoext-toolbar-options").click(callback);
+  }
 }
-
-
 
 class MessagingService {
-  constructor(jquery, templateService) {
-    this._templateService = templateService;
+  constructor(jquery) {
     this.$ = jquery;
     this.ToastrPosition = {
       TopRight: 1,
@@ -169,151 +303,9 @@ class MessagingService {
 
 }
 
-var vsopopout = vsopopout || (function () {
+const _view = new VsoView(jQuery);
+const _messagingService = new MessagingService(jQuery);
+const _controller = new VsoController(_view, chrome.storage, chrome.runtime, _messagingService);
 
-  // An object that will contain the "methods"
-  // we can use from our event script.
-  var methods = {};
-  var templatedata = null;
-  var pageContainer = ".main-container";
-  var toolbarContainer = "#page-vsoext-toolbar-container";
-  // This method will eventually return
-  // background colors from the current page.
-  methods.showVsoExtenstion = function () {
-
-    if (!templatedata) {
-      $.ajax(
-        {
-          url: chrome.extension.getURL('/content.html'),
-          cache: false,
-          success: function (data) {
-            templatedata = data;
-            if ($(pageContainer).length > 0) {
-              $(pageContainer).before($(data));
-            }
-            _resolveContainerItems();
-          }
-        });
-    } else {
-      _removeToolbar();
-      $(pageContainer).before($(templatedata));
-      _resolveContainerItems();
-    }
-
-  };
-
-  methods.hideVsoExtenstion = function () {
-
-    _removeToolbar();
-
-  };
-
-  function _removeToolbar() {
-
-    var vsoContainer = $(toolbarContainer);
-    if (vsoContainer.length > 0) {
-      vsoContainer.remove();
-    }
-    $(pageContainer).removeClass("main-container-offset");
-
-  }
-
-  function _resolveContainerItems() {
-    $(pageContainer).addClass("main-container-offset");
-    $("#page-vsoext-toolbar-close").click(function () {
-      _removeToolbar();
-      chrome.runtime.sendMessage({ method: "setState", data: false });
-    }).attr("src", chrome.extension.getURL("images/close.png"));
-
-    var showmyvsotasksButton = document.getElementById('showmyvsotasks');
-    showmyvsotasksButton.removeEventListener('click');
-    showmyvsotasksButton.addEventListener('click', _showVsoTask, false);
-
-    var addtaskButton = document.getElementById('addtask');
-    addtaskButton.removeEventListener('click');
-    addtaskButton.addEventListener('click', _showAddTask, false);
-
-    var addtemplateButton = document.getElementById('addtemplate');
-    addtemplateButton.removeEventListener('click');
-    addtemplateButton.addEventListener('click', _addTemplate, false);
-
-    var exportdataButton = document.getElementById('exportdata');
-    exportdataButton.removeEventListener('click');
-    exportdataButton.addEventListener('click', _export, false);
-
-    var notifyPullRequestButton = document.getElementById('notifyPullRequest');
-    notifyPullRequestButton.removeEventListener('click');
-    notifyPullRequestButton.addEventListener('click', _notifyPullrequest, false);
-
-    var enableKeyIndenter = document.getElementById("enablekeyindenter");
-    enableKeyIndenter.removeEventListener('click');
-    enableKeyIndenter.addEventListener('click', _enableKeyIndenting, false);
-
-  }
-
-  function _enableKeyIndenting() {
-    vsoKeyIndentingTemplate();
-  }
-
-  function _showVsoTask() {
-
-    if (!_checkUrl()) {
-      return;
-    }
-    vsoextShowMyVsoTasks();
-
-  }
-
-  function _showAddTask() {
-    if (!_checkUrl()) {
-      return;
-    }
-    vsoExtShowAddTask();
-
-  }
-
-  function _notifyPullrequest() {
-    if (!_checkUrl()) {
-      return;
-    }
-    vsoExtNotifyPullRequest();
-
-  }
-
-  function _addTemplate() {
-    if (!_checkUrl()) {
-      return;
-    }
-    vsoExtAddScrumTemplate();
-  }
-
-  function _export() {
-
-    if (!_checkUrl()) {
-      return;
-    }
-    vsoExtExportData();
-
-  }
-
-  function _checkUrl() {
-    if (window.location.href.indexOf("visualstudio.com") === -1) {
-      alert("Extension can only run when Visual Studio Online is the active tab");
-      return false;
-    }
-    return true;
-  }
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    var data = {};
-    // If the method the extension has requested
-    // exists, call it and assign its response
-    // to data.
-    if (methods.hasOwnProperty(request.method))
-      data = methods[request.method]();
-    // Send the response back to our extension.
-    sendResponse({ data: data });
-    return true;
-  });
-
-  return true;
-})();
+_messagingService.initialize();
+_controller.initalize();

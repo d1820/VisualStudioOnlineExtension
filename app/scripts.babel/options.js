@@ -1,25 +1,11 @@
 const jpDefaultOptions = {
-  transparency: 0.9,
-  theme: "jp-theme-dark",
-  autoOpenConsole: false,
-  preserveConsoleSize: false
+  autoOpenToolbar: false
 };
 
-document.getElementById("transparency").addEventListener("change", function (event) {
-  document.getElementById("transparencyValue").innerText = event.target.value;
-});
-
-// Saves options to chrome.storage.sync.
 function saveOptions() {
-  const transparency = document.getElementById("transparency").value;
-  const theme = document.getElementById("theme");
   const autoOpen = document.getElementById("autoOpen").checked;
-  const keepSize = document.getElementById("keepSize").checked;
   const options = {
-    transparency: (transparency / 100),
-    theme: theme.value,
-    autoOpenConsole: autoOpen,
-    preserveConsoleSize: keepSize
+    autoOpenToolbar: autoOpen
   };
   chrome.storage.local.set(options, () => {
     // Update status to let user know options were saved.
@@ -43,10 +29,7 @@ function saveOptions() {
 // stored in chrome.storage.
 function restoreOptions() {
   chrome.storage.local.get(jpDefaultOptions, (options) => {
-    document.getElementById("transparencyValue").innerText = document.getElementById("transparency").value = (options.transparency * 100);
-    document.getElementById("theme").value = options.theme;
-    document.getElementById("autoOpen").checked = options.autoOpenConsole;
-    document.getElementById("keepSize").checked = options.preserveConsoleSize;
+    document.getElementById("autoOpen").checked = options.autoOpenToolbar;
   });
 }
 
