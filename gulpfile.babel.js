@@ -144,7 +144,7 @@ gulp.task("less:build", function () {
 gulp.task("package", function () {
   const manifest = require("./dist/manifest.json");
   return gulp.src("dist/**")
-    .pipe($.zip("JenkinsPlusExt-" + manifest.version + ".zip"))
+    .pipe($.zip("VSOExtension-" + manifest.version + ".zip"))
     .pipe(gulp.dest("package"));
 });
 
