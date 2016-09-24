@@ -2,7 +2,6 @@
 This Chrome extension provides some missing features in Visual Studio Online
 
 Provides the following functionality:
- - Filter task from the board view to only yours
  - Add as task from the Work Item pop out while still on the descriptions tab
  - Add a standardized template for filling out the description of a Work Item from the pop out
     - Format:
