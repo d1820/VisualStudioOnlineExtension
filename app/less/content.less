@@ -1,0 +1,79 @@
+﻿@import 'imports/font-awesome';
+@import 'imports/vsotoastr';
+
+#page-vsoext-toolbar-container {
+    z-index: 60000 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0px !important;
+    width: 100% !important;
+    height: 30px !important;
+    background-color: #052f64 !important;
+    cursor: default !important;
+    .page-vsoext-icon-container {
+        float: right;
+        color: #fff;
+        font-size: 20px;
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            li {
+                padding: 0 10px;
+                float: left;
+                i {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    label.vsoheader {
+        color: #fff;
+        font-size: medium;
+        padding-right: 20px;
+        padding-top: 2px;
+        padding-left: 10px;
+    }
+    .btn {
+        color: #fff;
+        display: inline-block;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .pull-left {
+        float: left;
+    }
+    .btnpad {
+        padding-top: 4px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .spacer {
+        color: #fff;
+        padding-top: 5px;
+        font-weight: bold;
+    }
+    .vsocheckbox {
+        margin-top: 8px;
+        margin-left: 8px;
+    }
+}
+
+.main-container-offset {
+    -webkit-transform: translateY(30px) !important;
+    -moz-transform: translateY(30px) !important;
+    -ms-transform: translateY(30px) !important;
+    -o-transform: translateY(30px) !important;
+    transform: translateY(30px) !important;
+}
