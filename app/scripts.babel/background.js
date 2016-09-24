@@ -37,8 +37,8 @@ chrome.runtime.onInstalled.addListener(() => {
 
 const methods = {
   //this gets called from the content when user clicks close icon
-  setState: (isShowing) => {
-    vsoShowing = isShowing;
+  setState: (data) => {
+    vsoShowing = data.isShowing;
   },
   openInNewTab: (data, sendResponse) => {
     chrome.tabs.create({ url: data.url });

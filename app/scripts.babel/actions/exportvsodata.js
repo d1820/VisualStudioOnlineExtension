@@ -1,6 +1,7 @@
-﻿const vsoExtExportData = function ($) {
+﻿const vsoExtExportData = function ($, messageService) {
   function execute() {
     if ($) {
+      messageService.info("Generating export...");
       let header = "";
       const rows = [];
       const parent = $(".productbacklog-grid-results").length > 0 ? $(".productbacklog-grid-results") : $(".query-result-grid");
@@ -18,6 +19,7 @@
         headerArr.push("\"" + str + "\"");
       });
       header = headerArr.join() + "\r\n";
+
       const inv = setInterval(function () {
         const items = canvas.find(".grid-row");
         const lastRow = $(items[items.length - 1]);
@@ -27,8 +29,9 @@
           let rowDataConcat = "";
           $.each(headerArr, function (i, e) {
             if (e == "\"Tags\"") {
+              //console.log("tags column");
               let tagStr = "";
-              let tags = $(cells[i]).find(".tags-items-container li");
+              const tags = $(cells[i]).find(".tags-items-container li");
               $.each(tags, function (idx, li) { tagStr += $(li).text().trim() + "|"; });
               rowDataConcat += tagStr;
               vsoRow[e] = tagStr;
@@ -39,20 +42,18 @@
           });
           if (rowDataConcat.length > 0) {
             lastRowRead = $(row).attr("id");
-            //console.log(lastRowRead);
             rows.push(vsoRow);
           } else {
             return;
           }
           last = $("#" + lastRowRead);
-          console.log("last:" + last);
-          if (last.attr("id") == lastRow.attr("id")) {
+          if (last.attr("id") === lastRow.attr("id")) {
             const lastSpot = lastRow.position().top;
             scrollTo += lastSpot - 20;
             canvas.scrollTop(scrollTo);
-
             if (scrollTo >= maxHeight) {
               clearInterval(inv);
+              //console.log("interval cleared");
               const unq = [];
               const unqRows = [];
               $.each(rows, function (i, e) {
@@ -66,9 +67,9 @@
               $.each(unqRows, function (i, e) {
                 const itemText = [];
                 for (const key in e) {
-                  itemText.push("\"" + e[key] + "\"")
+                  itemText.push("\"" + e[key] + "\"");
                 }
-                content += itemText.join() + "\r\n"
+                content += itemText.join() + "\r\n";
               });
               const csvData = "data:application/csv;charset=utf-8," + encodeURIComponent(content);
               const link = document.createElement("a");
@@ -76,6 +77,7 @@
               const name = document.title ? document.title : "my_data";
               link.setAttribute("download", name + ".csv");
               link.click();
+              messageService.success("Export Complete");
             }
           }
         });

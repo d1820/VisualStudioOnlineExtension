@@ -2,14 +2,14 @@
     "name": "Visual Studio Online Extension",
     "description": "This extension provides some missing features in Visual Studio Online",
     "manifest_version": 2,
-    "version": "3.0.0",
-    "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAignovzmMAMPq9DIkJ8q7KxENZNf39ZKUqsgCEw8xgkNXRjFHG/3gpHDSA+ImNXN2iV1bgB3M7/GB0MinZHmSqE4MSwh8r+we5O07Ho43Q+DwqLbch4HRoFqwRasm+AUUDqx2/7jBLbvtt6uIht4OW4BKJmAA52FnH78N1X8621iQZvNTugaXkDDju9XU25wFHAPjpz/S8MA4BfFIbrhANyrhHKdZaM5pEQ0nwgOhlsGGOc9HL3pUxejmPC5Q0BvO0rjsTPiC1lC97Uu0VXUR2+NNZJZhbP1pFSwU4INbaiYoqqfb5mSMEg3azy71EvBeUrRULPlB1RN8Cd0uCjzD4QIDAQAB",
+    "version": "2.0.0",
+    "key":"",
     "page_action": {
         "default_icon": "images/vso19.png",
         "default_title": "VSO Utilities"
     },
     "icons": {
-        "16": "images/vso16.png",
+        "16": "images/vso.png",
         "128": "images/vso128.png"
     },
     "content_scripts": [
@@ -22,13 +22,14 @@
             ],
             "js": [
                 "scripts/jquery.min.js",
-                "scripts/content.js",
-                "scripts/addscrumtemplate.js",
-                "scripts/exportvsodata.js",
-                "scripts/notifypullrequest.js",
-                "scripts/showaddtask.js",
-                "scripts/showmyvsotasks.js",
-                "scripts/keyindenting.js"
+                "scripts/actions/addscrumtemplate.js",
+                "scripts/actions/exportvsodata.js",
+                "scripts/actions/notifypullrequest.js",
+                "scripts/actions/showaddtask.js",
+                "scripts/actions/showmyvsotasks.js",
+                "scripts/actions/keyindenting.js",
+                "scripts/content.js"
+                
             ],
             "run_at": "document_end"
         }
@@ -47,10 +48,11 @@
     "web_accessible_resources": [
         "images/*.png",
         "fonts/*",
-        "content.html"
+        "toolbar.html"
     ],
     "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "declarativeContent"
     ]
 }

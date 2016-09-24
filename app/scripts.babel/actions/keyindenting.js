@@ -2,18 +2,13 @@
 const vsoKeyIndentingTemplate = function ($) {
   function execute() {
     if ($) {
-
       let target = $(".work-items-right-pane");
       if (target.length === 0) {
         target = $(".workitem-dialog");
       }
-
-
       const items = target.last().find(".workitemcontrol");
-
       const contentItems = [];
       items.each(function (index) {
-
         const $body = $(this).find(".richeditor-editarea iframe").contents().find("body");
         if ($body.length > 0) {
           const $toolbar = $(this).find(".richeditor-toolbar");
@@ -37,7 +32,6 @@ const vsoKeyIndentingTemplate = function ($) {
       const frames = target.last()
         .find(".workitemcontrol")
         .find(".richeditor-editarea iframe").contents().find("body");
-
 
       frames.each(function () {
         const $body = $(this);

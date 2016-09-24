@@ -1,12 +1,11 @@
 ﻿const vsoExtShowAddTask = function ($) {
   function execute() {
     if ($) {
-      const detailTab = $(".work-item-form-tab[title='Details']");
-      const linkTab = $(".work-item-form-tab[title='Links']");
-      linkTab.click();
-      detailTab.click();
-      const mainCon = $("div.workitemcontrol li[command=\"links-control-link-to-new\"]");
-      mainCon.click();
+      const $div = $("div.add-links-container:last");
+      const linkButton = $div.find("button.add-new-item-component:last");
+      linkButton.click();
+      const newItemLink = $div.find(".menu-popup .sub-menu li[command='link-to-new'] span:first");
+      newItemLink.click();
     }
   }
   return {

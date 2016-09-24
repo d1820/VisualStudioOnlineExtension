@@ -6,17 +6,17 @@
       const scopeHtml = "<br/><div>Scope</div><div>" + scopelistHtml + "</div>";
       const boundryHtml = "<div>Boundaries</div><div>" + listHtml + "</div>";
       const assumptionHtml = "<div>Assumptions</div><div>" + listHtml + "</div>";
-      let target = $(".work-items-right-pane");
-      if (target.length === 0) {
-        target = $(".workitem-dialog");
-      }
+      let target;// = $(".work-items-right-pane");
+      //if (target.length === 0) {
+      target = $(".workitem-dialog");
+      //}
       target.last()
-        .find(".workitemcontrol")
+        .find(".section-container .work-item-control")
         .find(".richeditor-editarea iframe")
         .first()
         .contents()
         .find("body")
-        .append(assumptionHtml + scopeHtml + boundryHtml);
+        .append(assumptionHtml + scopeHtml + boundryHtml).focus();
     }
   }
   return {

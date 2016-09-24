@@ -18,6 +18,10 @@ class VsoController {
       self._vsoOptions = options;
       if (options.autoOpenToolbar) {
         self._renderToolbar(self.view);
+        self.runtime.sendMessage({
+          action: "setState",
+          data: { isShowing: true }
+        });
       }
     });
     this.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -26,8 +30,6 @@ class VsoController {
         case "showVsoExtenstion":
           {
             self._renderToolbar(self.view);
-            //const err = self._createError("failure:notSuportedPage", "Not a supported page for the Jenkins Console Viewer");
-            //self._messagingService.warning(err.error);
             if (sendResponse) {
               sendResponse({ status: "successfully opened" });
             }
@@ -44,7 +46,7 @@ class VsoController {
     });
 
     this._vsoExtAddScrumTemplate = new vsoExtAddScrumTemplate(this.view.getJquery());
-    this._vsoExtExportData = new vsoExtExportData(this.view.getJquery());
+    this._vsoExtExportData = new vsoExtExportData(this.view.getJquery(), this._messagingService);
     this._vsoKeyIndentingTemplate = new vsoKeyIndentingTemplate(this.view.getJquery());
     this._vsoExtNotifyPullRequest = new vsoExtNotifyPullRequest(this.view.getJquery(), self._messagingService);
     this._vsoExtShowAddTask = new vsoExtShowAddTask(this.view.getJquery());
