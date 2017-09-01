@@ -2,7 +2,7 @@
     "name": "Visual Studio Online Extension",
     "description": "This extension provides some missing features in Visual Studio Online",
     "manifest_version": 2,
-    "version": "2.0.0",
+    "version": "2.1.0",
     "key":"",
     "page_action": {
         "default_icon": "images/vso19.png",
@@ -28,8 +28,9 @@
                 "scripts/actions/showaddtask.js",
                 "scripts/actions/showmyvsotasks.js",
                 "scripts/actions/keyindenting.js",
+                "scripts/actions/addAcceptanceCriteria.js",
                 "scripts/content.js"
-                
+
             ],
             "run_at": "document_end"
         }

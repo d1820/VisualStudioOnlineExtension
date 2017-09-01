@@ -32,7 +32,7 @@
       2,
       "function"
     ],
-   
+
     "no-redeclare": [
       2,
       {
@@ -96,7 +96,7 @@
     "curly": 2,
     "no-eval": 2,
     "no-implied-eval": 2,
-    "no-undefined": 2,
+    "no-undefined": 1,
     "no-trailing-spaces": 2,
     "no-var": 2,
     "prefer-const": 2,
@@ -128,7 +128,7 @@
       }
     ],
     "no-mixed-spaces-and-tabs": [
-      1,
+      2,
       "smart-tabs"
     ],
     "quote-props": [

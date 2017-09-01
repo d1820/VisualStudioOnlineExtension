@@ -1,4 +1,5 @@
 ﻿
+/* eslint no-undefined:off, no-unused-vars:off */
 const vsoExtNotifyPullRequest = function ($, messagingService) {
   let checker = null;
   function execute() {

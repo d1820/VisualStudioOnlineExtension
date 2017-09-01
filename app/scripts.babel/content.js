@@ -106,8 +106,6 @@ class VsoController {
           data: { url: "chrome://extensions/?options=" + chrome.runtime.id }
         });
       }
-
-
     });
     view.showMyTasksButtonRegisterClick(() => {
       this._checkAndCall(this._vsoextShowMyVsoTasks.execute);
@@ -126,6 +124,15 @@ class VsoController {
     });
     view.enableKeyIndentingButtonRegisterClick(() => {
       this._checkAndCall(this._vsoKeyIndentingTemplate.execute);
+    });
+
+    view.showCriteriaSelections();
+
+    view.selectCriteria(() => {
+      const _vsoAcceptanceCriteriaTemplate = new vsoAcceptanceCriteriaTemplate(view.getJquery(), view.getCheckboxCollection());
+      this._checkAndCall(_vsoAcceptanceCriteriaTemplate.execute);
+      view.hideCriteriaSelections();
+      view.resetCheckboxCollection();
     });
   }
 
@@ -203,6 +210,35 @@ class VsoView {
 
   optionsToolbarClick(callback) {
     this.$("#page-vsoext-toolbar-options").click(callback);
+  }
+  showCriteriaSelections() {
+    this.isAcceptanceCriteriaShowing = false;
+    this.$("#addcriteria").off().click(() => {
+      if (!this.isAcceptanceCriteriaShowing) {
+        this.$("#criteriaoptions").show();
+      } else {
+        this.$("#criteriaoptions").hide();
+      }
+      this.isAcceptanceCriteriaShowing = !this.isAcceptanceCriteriaShowing;
+    });
+  }
+  hideCriteriaSelections() {
+    this.$("#criteriaoptions").hide();
+    this.isAcceptanceCriteriaShowing = false;
+  }
+
+  getCheckboxCollection() {
+    return this.$("#criteriaoptions input[type='checkbox']:checked");
+  }
+
+  resetCheckboxCollection() {
+    this.$("#criteriaoptions input[type='checkbox']:checked").each((idx, node) => {
+      $(node).prop("checked", false);
+    });
+  }
+
+  selectCriteria(callback) {
+    this.$("#btnSelectCriteria").click(callback);
   }
 }
 

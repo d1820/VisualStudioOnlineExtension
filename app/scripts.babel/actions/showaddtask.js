@@ -1,4 +1,5 @@
-﻿const vsoExtShowAddTask = function ($) {
+﻿/* eslint no-undefined:off, no-unused-vars:off */
+const vsoExtShowAddTask = function ($) {
   function execute() {
     if ($) {
       const $div = $("div.add-links-container:last");

@@ -1,4 +1,5 @@
-﻿const vsoextShowMyVsoTasks = function ($) {
+﻿/* eslint no-undefined:off, no-unused-vars:off */
+const vsoextShowMyVsoTasks = function ($) {
   function execute() {
     if ($) {
       $("#taskboard-table-body tbody tr.taskboard-row-summary").each(function (e, t) {

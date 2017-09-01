@@ -1,4 +1,5 @@
 ﻿
+/* eslint no-undefined:off, no-unused-vars:off */
 const vsoKeyIndentingTemplate = function ($) {
   function execute() {
     if ($) {

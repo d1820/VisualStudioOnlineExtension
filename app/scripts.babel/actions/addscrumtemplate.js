@@ -1,4 +1,5 @@
-﻿const vsoExtAddScrumTemplate = function ($) {
+﻿/* eslint no-undefined:off, no-unused-vars:off */
+const vsoExtAddScrumTemplate = function ($) {
   function execute() {
     if ($) {
       const listHtml = "<ul><li></li></ul>";
@@ -6,10 +7,7 @@
       const scopeHtml = "<br/><div>Scope</div><div>" + scopelistHtml + "</div>";
       const boundryHtml = "<div>Boundaries</div><div>" + listHtml + "</div>";
       const assumptionHtml = "<div>Assumptions</div><div>" + listHtml + "</div>";
-      let target;// = $(".work-items-right-pane");
-      //if (target.length === 0) {
-      target = $(".workitem-dialog");
-      //}
+      const target = $(".workitem-dialog");
       target.last()
         .find(".section-container .work-item-control")
         .find(".richeditor-editarea iframe")

@@ -9,11 +9,29 @@
     <div style="height: 30px;">
         <label class="pull-left vsoheader">VSO Extension:</label>
         <!--<label class="btn pull-left btnpad" title="From the task board this will hide all inactive tasks" id="showmyvsotasks">Show My VSO Tasks</label><span class="spacer pull-left ">|</span>-->
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enables you to add a task from the description tab" id="addtask">Add Task</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts a standard template for filling out the description" id="addtemplate">Add Description Template</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From a user query or builtin query will export the columns and data out to a CSV file" id="exportdata">Export VSO Data</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enable using alt+i or alt+o to increase or decrease indent " id="enablekeyindenter">Enable Key Indent</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enables you to add a task from the description tab"
+            id="addtask">Add Task</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts a standard template for filling out the description"
+            id="addtemplate">Add Description Template</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts selected criteria details at the current cursor location"
+            id="addcriteria">Add Acceptance Criteria Template</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From a user query or builtin query will export the columns and data out to a CSV file"
+            id="exportdata">Export VSO Data</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enable using alt+i or alt+o to increase or decrease indent "
+            id="enablekeyindenter">Enable Key Indent</label><span class="spacer pull-left ">|</span>
         <label class="btn pull-left btnpad" title="From a Pull request will throw an alert when the build is completed" id="notifyPullRequest">Notify Pull Request Build Complete</label>
-        
+    </div>
+    <div id="criteriaoptions" class="arrow_box criteria-container" style="display: none;">
+        <ul>
+            <li><label><input type="checkbox" data-title="API Services">API Services</label></li>
+            <li><label><input type="checkbox" data-title="Branding and Skinning">Branding and Skinning</label></li>
+            <li><label><input type="checkbox"  data-title="Configuration Settings">Configuration Settings</label></li>
+            <li><label><input type="checkbox" data-title="Field Level Validation">Field Level Validation</label></li>
+            <li><label><input type="checkbox" data-title="Error/Message Handling">Error/Message Handling</label></li>
+            <li><label><input type="checkbox" data-title="Localization (multilingual)">Localization (multilingual)</label></li>
+            <li><label><input type="checkbox" data-title="Logging/Auditing">Logging/Auditing</label></li>
+            <li><label ><input type="checkbox" data-title="Security">Security</label></li>
+        </ul>
+        <button type="button" id="btnSelectCriteria">Add</button>
     </div>
 </div>
