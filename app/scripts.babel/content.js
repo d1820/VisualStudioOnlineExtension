@@ -16,29 +16,29 @@ class VsoController {
     const self = this;
     this.storage.local.get(this.vsoDefaultOptions, (options) => {
       self._vsoOptions = options;
-      if (options.autoOpenToolbar) {
+      if(options.autoOpenToolbar) {
         self._renderToolbar(self.view);
         self.runtime.sendMessage({
           action: "setState",
-          data: { isShowing: true }
+          data: {isShowing: true}
         });
       }
     });
-    this.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    this.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       self._extensionInfo = (request.extInfo ? request.extInfo : self._extensionInfo);
-      switch (request.action) {
+      switch(request.action) {
         case "showVsoExtenstion":
           {
             self._renderToolbar(self.view);
-            if (sendResponse) {
-              sendResponse({ status: "successfully opened" });
+            if(sendResponse) {
+              sendResponse({status: "successfully opened"});
             }
             break;
           }
         default:
           self._removeToolbar(self.view);
-          if (sendResponse) {
-            sendResponse({ status: "successfully closed" });
+          if(sendResponse) {
+            sendResponse({status: "successfully closed"});
           }
           break;
       }
@@ -56,14 +56,14 @@ class VsoController {
   _renderToolbar(view) {
     const self = this;
     const pageContainer = view.getPageContainer();
-    if (!self.templatedata) {
+    if(!self.templatedata) {
       $.ajax(
         {
           url: chrome.extension.getURL("/toolbar.html"),
           cache: false,
-          success: function (data) {
+          success: function(data) {
             self.templatedata = data;
-            if (pageContainer.length > 0) {
+            if(pageContainer.length > 0) {
               pageContainer.before($(data));
             }
             self._addToolbarItems(view);
@@ -78,7 +78,7 @@ class VsoController {
 
   _removeToolbar(view) {
     const vsoContainer = view.getToolbarContainer();
-    if (vsoContainer.length > 0) {
+    if(vsoContainer.length > 0) {
       vsoContainer.remove();
     }
     view.removePageContainerClass();
@@ -89,24 +89,26 @@ class VsoController {
     view.addPageContainerClass();
     view.closeToolbarClick(() => {
       self._removeToolbar(view);
-      chrome.runtime.sendMessage({ action: "setState", data: false });
+      chrome.runtime.sendMessage({action: "setState", data: false});
     });
     view.bugToolbarClick(() => {
       self.runtime.sendMessage({
         action: "openInNewTab",
-        data: { url: "https://github.com/d1820/VisualStudioOnlineExtension/issues" }
+        data: {url: "https://github.com/d1820/VisualStudioOnlineExtension/issues"}
       });
     });
     view.optionsToolbarClick(() => {
-      if (chrome.runtime.openOptionsPage) {
+      if(chrome.runtime.openOptionsPage) {
         chrome.runtime.openOptionsPage();
       } else {
         self.runtime.sendMessage({
           action: "openInNewTab",
-          data: { url: "chrome://extensions/?options=" + chrome.runtime.id }
+          data: {url: "chrome://extensions/?options=" + chrome.runtime.id}
         });
       }
     });
+    view.sprintCalculatorsToolbarClick();
+
     view.showMyTasksButtonRegisterClick(() => {
       this._checkAndCall(this._vsoextShowMyVsoTasks.execute);
     });
@@ -137,7 +139,7 @@ class VsoController {
   }
 
   _checkAndCall(callback) {
-    if (!this._checkUrl()) {
+    if(!this._checkUrl()) {
       return;
     }
     callback();
@@ -152,7 +154,7 @@ class VsoController {
   }
 
   _checkUrl(messagingService) {
-    if (window.location.href.indexOf("visualstudio.com") === -1) {
+    if(window.location.href.indexOf("visualstudio.com") === -1) {
       messagingService.warning("Extension can only run when Visual Studio Online is the active tab");
       return false;
     }
@@ -211,17 +213,86 @@ class VsoView {
   optionsToolbarClick(callback) {
     this.$("#page-vsoext-toolbar-options").click(callback);
   }
+
+  sprintCalculatorsToolbarClick() {
+    const self = this;
+    this.isSprintCalculatorShowing = false;
+    this.$("#page-vsoext-toolbar-sprintcalc").off().click(() => {
+      if(!this.isSprintCalculatorShowing) {
+        this.$("#sprintcalc").show();
+        this.setupDefaultCalcValues();
+        this.$("#btncalcreset").off().click(() => {
+          this.setupDefaultCalcValues();
+        });
+        this.$(".calcfield").off();
+        this.$(".calcfield").numeric({
+          allow: ".-",
+          onedecimal: true,
+          allownegative: true
+        });
+        this.$(".calcfield").focus(function() {
+          self.$(this).val("");
+        }).blur(function() {
+          if(self.$(this).val() === "") {
+            self.$(this).val("0");
+          }
+          self.recalculateCapacity();
+        });
+        self.recalculateCapacity();
+      } else {
+        this.$("#sprintcalc").hide();
+      }
+      this.isSprintCalculatorShowing = !this.isSprintCalculatorShowing;
+    });
+  }
+  setupDefaultCalcValues() {
+    this.$("#allocation").val(100);
+    this.$("#daysinsprint").val(10);
+    this.$("#hoursinday").val(8);
+
+    this.$("#devleadhours").val(0);
+    this.$("#adminhours").val(0);
+    this.$("#sprintplanninghours").val(0);
+    this.$("#groominghours").val(0);
+    this.$("#demohours").val(0);
+    this.$("#retrohours").val(0);
+    this.$("#traininghours").val(0);
+    this.$("#scrumhours").val(0);
+    this.$("#prodsupporthours").val(0);
+    this.recalculateCapacity();
+  }
+  getTotalCapacityHours() {
+    return (parseFloat(this.$("#devleadhours").val()) + parseFloat(this.$("#adminhours").val()) +
+      parseFloat(this.$("#sprintplanninghours").val()) + parseFloat(this.$("#groominghours").val()) +
+      parseFloat(this.$("#demohours").val()) +
+      parseFloat(this.$("#retrohours").val()) + parseFloat(this.$("#traininghours").val()) +
+      parseFloat(this.$("#scrumhours").val()) + parseFloat(this.$("#prodsupporthours").val()));
+  }
+  recalculateCapacity() {
+    const beginingCapacity = (parseInt(this.$("#daysinsprint").val(), 10) * parseInt(this.$("#hoursinday").val(), 10)) / (parseInt(this.$("#allocation").val(), 10) / 100);
+    this.$("#capacity").text(beginingCapacity);
+    const totalHours = this.getTotalCapacityHours();
+    this.$("#totalhours").text(totalHours);
+    const totalCapacity = parseFloat(beginingCapacity) - parseFloat(totalHours);
+    this.$("#totalcapacity").text(totalCapacity);
+    const totalHoursPerDay = parseFloat(totalCapacity) / parseFloat(this.$("#daysinsprint").val());
+    this.$("#totalhoursperday").text(totalHoursPerDay);
+  }
+
   showCriteriaSelections() {
     this.isAcceptanceCriteriaShowing = false;
+
     this.$("#addcriteria").off().click(() => {
-      if (!this.isAcceptanceCriteriaShowing) {
+      if(!this.isAcceptanceCriteriaShowing) {
         this.$("#criteriaoptions").show();
+
       } else {
         this.$("#criteriaoptions").hide();
       }
       this.isAcceptanceCriteriaShowing = !this.isAcceptanceCriteriaShowing;
     });
   }
+
   hideCriteriaSelections() {
     this.$("#criteriaoptions").hide();
     this.isAcceptanceCriteriaShowing = false;
@@ -267,7 +338,7 @@ class MessagingService {
   initialize() {
     this._toastContainer = this.$("<div class='vso-toastr'><div id='vso-toast-container'></div>");
     const body = this.$("body");
-    if (body.length > 0) {
+    if(body.length > 0) {
       body.append(this._toastContainer);
     } else {
       this._useAlerts = true;
@@ -275,7 +346,7 @@ class MessagingService {
   }
 
   lookupTypeClass(toastrType) {
-    switch (toastrType) {
+    switch(toastrType) {
       case this.ToastrType.Success:
         return "toast-success";
       case this.ToastrType.Info:
@@ -293,7 +364,7 @@ class MessagingService {
     const self = this;
     return setTimeout(() => {
       self.$("#" + id).remove();
-      if (self._toastContainer.find("#vso-toast-container .toast").length === 0) {
+      if(self._toastContainer.find("#vso-toast-container .toast").length === 0) {
         self._toastContainer.hide();
       }
     }, timeout);
@@ -301,7 +372,7 @@ class MessagingService {
   addToast(toast) {
 
     const self = this;
-    if (self._useAlerts) {
+    if(self._useAlerts) {
       alert(toast.message);
       return;
     }
@@ -322,20 +393,20 @@ class MessagingService {
   }
 
   error(message) {
-    const toast = { type: this.ToastrType.Error, timeout: 7000, message: message };
+    const toast = {type: this.ToastrType.Error, timeout: 7000, message: message};
     this.addToast(toast);
 
   }
   info(message) {
-    const toast = { type: this.ToastrType.Info, timeout: 5000, message: message };
+    const toast = {type: this.ToastrType.Info, timeout: 5000, message: message};
     this.addToast(toast);
   }
   success(message) {
-    const toast = { type: this.ToastrType.Success, timeout: 5000, message: message };
+    const toast = {type: this.ToastrType.Success, timeout: 5000, message: message};
     this.addToast(toast);
   }
   warning(message) {
-    const toast = { type: this.ToastrType.Warning, timeout: 5000, message: message };
+    const toast = {type: this.ToastrType.Warning, timeout: 5000, message: message};
     this.addToast(toast);
   }
 

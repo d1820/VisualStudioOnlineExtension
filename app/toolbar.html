@@ -1,6 +1,7 @@
 <div id="page-vsoext-toolbar-container" class="page-vsoext-toolbar-container">
     <div class="page-vsoext-icon-container">
         <ul>
+            <li><i id="page-vsoext-toolbar-sprintcalc" class="fa fa-calculator" title="sprint capacity calculator"></i></li>
             <li><i id="page-vsoext-toolbar-options" class="fa fa-cog" title="options"></i></li>
             <li><i id="page-vsoext-toolbar-bug" class="fa fa-bug" title="report a bug"></i></li>
             <li><i id="page-vsoext-toolbar-close" class="fa fa-close" title="close"></i></li>
@@ -9,16 +10,11 @@
     <div style="height: 30px;">
         <label class="pull-left vsoheader">VSO Extension:</label>
         <!--<label class="btn pull-left btnpad" title="From the task board this will hide all inactive tasks" id="showmyvsotasks">Show My VSO Tasks</label><span class="spacer pull-left ">|</span>-->
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enables you to add a task from the description tab"
-            id="addtask">Add Task</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts a standard template for filling out the description"
-            id="addtemplate">Add Description Template</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts selected criteria details at the current cursor location"
-            id="addcriteria">Add Acceptance Criteria Template</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From a user query or builtin query will export the columns and data out to a CSV file"
-            id="exportdata">Export VSO Data</label><span class="spacer pull-left ">|</span>
-        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enable using alt+i or alt+o to increase or decrease indent "
-            id="enablekeyindenter">Enable Key Indent</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enables you to add a task from the description tab" id="addtask">Add Task</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts a standard template for filling out the description" id="addtemplate">Add Description Template</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, inserts selected criteria details at the current cursor location" id="addcriteria">Add Acceptance Criteria Template</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From a user query or builtin query will export the columns and data out to a CSV file" id="exportdata">Export VSO Data</label><span class="spacer pull-left ">|</span>
+        <label class="btn pull-left btnpad" title="From the Product Backlog Item popout, enable using alt+i or alt+o to increase or decrease indent " id="enablekeyindenter">Enable Key Indent</label><span class="spacer pull-left ">|</span>
         <label class="btn pull-left btnpad" title="From a Pull request will throw an alert when the build is completed" id="notifyPullRequest">Notify Pull Request Build Complete</label>
     </div>
     <div id="criteriaoptions" class="arrow_box criteria-container" style="display: none;">
@@ -30,8 +26,140 @@
             <li><label><input type="checkbox" data-title="Error/Message Handling">Error/Message Handling</label></li>
             <li><label><input type="checkbox" data-title="Localization (multilingual)">Localization (multilingual)</label></li>
             <li><label><input type="checkbox" data-title="Logging/Auditing">Logging/Auditing</label></li>
-            <li><label ><input type="checkbox" data-title="Security">Security</label></li>
+            <li><label><input type="checkbox" data-title="Security">Security</label></li>
         </ul>
         <button type="button" id="btnSelectCriteria">Add</button>
+    </div>
+
+    <div id="sprintcalc" class="calc-container" style="display: none;">
+        <div class="arrow_box">
+            <table class="calc-table" id="calculator" cellpadding=0 cellspacing=0>
+
+                <tr class="table-header">
+                    <th colspan=2 stye="text-align:center;">Sprint Capacity Calculator</th>
+                </tr>
+                <tr>
+                    <td>% Allocation</td>
+                    <td style="text-align:right;">
+                        <input id="allocation" type="number" min="0" max="100" value="100" class="calcfield" style="text-align:right;" maxlength="6" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td># of Days in Sprint</td>
+                    <td style="text-align:right;">
+                        <input id="daysinsprint" type="number" min="0" max="365" value="10" style="text-align:right;" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total Hours In Day</td>
+                    <td style="text-align:right;">
+                        <input id="hoursinday" type="number" min="0" max="24" value="8" style="text-align:right;" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-subheader">Beginning Capacity Hours</td>
+                    <td class="table-subheader" style="text-align: right;"> <span id="capacity"> Enter Values</span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br/>
+                    </td>
+                </tr>
+                <tr class="table-header">
+                    <td>Event</td>
+                    <td style="text-align:right;padding-right:30px;">Hours</td>
+                </tr>
+                <tr>
+                    <td>Dev Lead Support</td>
+                    <td style="text-align:right;">
+                        <input id="devleadhours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Admin total for Sprint</td>
+                    <td style="text-align:right;">
+                        <input id="adminhours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sprint Planning</td>
+                    <td style="text-align:right;">
+                        <input id="sprintplanninghours" type="number" min="0" max="1000" style="text-align:right;" value="0" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Grooming</td>
+                    <td style="text-align:right;">
+                        <input id="groominghours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Demo</td>
+                    <td style="text-align:right;">
+                        <input id="demohours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Retro</td>
+                    <td style="text-align:right;">
+                        <input id="retrohours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Training</td>
+                    <td style="text-align:right;">
+                        <input id="traininghours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Scrum</td>
+                    <td style="text-align:right;">
+                        <input id="scrumhours" type="number" min="0" max="1000" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Prod Support</td>
+                    <td style="text-align:right;">
+                        <input id="prodsupporthours" type="number" max="1000" min="0" value="0" style="text-align:right;" class="calcfield" maxlength="5" size="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-subheader">Total Hours</td>
+                    <td class="table-subheader" style="text-align: right;"> <span id="totalhours">
+                   </span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-subheader">Total Capacity</td>
+                    <td class="table-subheader" style="text-align: right;"> <span id="totalcapacity"></span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-subheader">Hours per Day</td>
+                    <td class="table-subheader" style="text-align: right;"> <span id="totalhoursperday"></span>
+
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">
+                          <button id="btncalcreset" >Reset</button>
+                        </td>
+                      </tr>
+            </table>
+        </div>
     </div>
 </div>

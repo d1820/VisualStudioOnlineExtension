@@ -78,22 +78,19 @@
       "prefer-double"
     ],
     "keyword-spacing": [
-      2,
+      1,
       {
         "before": true,
         "after": true
       }
     ],
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ],
-    "space-before-blocks": 2,
+    "object-curly-spacing": 1,
+    "space-before-blocks": 1,
     "no-useless-constructor": 2,
     "comma-dangle": 2,
     "no-unreachable": 2,
     "valid-typeof": 2,
-    "curly": 2,
+    "curly": 1,
     "no-eval": 2,
     "no-implied-eval": 2,
     "no-undefined": 1,

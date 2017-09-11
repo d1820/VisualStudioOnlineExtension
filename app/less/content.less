@@ -26,10 +26,59 @@
             }
         }
     }
-    .criteria-container {
+    .calc-container {
         position: absolute;
+        width: 250px;
+        right: 10px;
+        left: unset;
+        position: absolute;
+        top: 38px;
+        .calc-table {
+            width: 100%;
+            td {
+                padding: 3px;
+            }
+            .table-header {
+                background-color: #052f64;
+                color: #fff;
+            }
+            .table-subheader {
+                background-color: #cccccc;
+                font-weight: bold;
+            }
+        }
+        .arrow_box {
+            position: relative;
+            background-color: #ffffff;
+            border: 4px solid #c2e1f5;
+            padding: 4px;
+        }
+        .arrow_box:after,
+        .arrow_box:before {
+            bottom: 100%;
+            left: 125px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+        .arrow_box:after {
+            border-color: rgba(0, 0, 0, 0);
+            border-bottom-color: #ffffff;
+            border-width: 10px;
+            margin-left: -10px;
+        }
+        .arrow_box:before {
+            border-color: rgba(194, 225, 245, 0);
+            border-bottom-color: #c2e1f5;
+            border-width: 16px;
+            margin-left: -16px;
+        }
     }
     .criteria-container {
+        position: absolute;
         width: 200px;
         top: 3px;
         left: 400px;
